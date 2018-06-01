@@ -33,15 +33,16 @@ public class ClassCreatorService {
         System.out.println(createClass(ClassCreator, classOptions));*/
     }
 
-    public StringBuilder createClass(ClassCreator ClassCreator, ClassOptions classOptions) {
+    public StringBuilder createClass(ClassCreator classCreator, ClassOptions classOptions) {
         StringBuilder sourceCode = new StringBuilder();
 
-        String mainPackageName = ClassCreator.getMainPackageName();
-        String newPackageName = ClassCreator.getPackageName();
-        String authorName = ClassCreator.getAuthorName();
-        String version = ClassCreator.getVersion();
-        String className = ClassCreator.getClassName();
-        HashMap<String, String> variables = ClassCreator.getVariables();
+        String mainPackageName = classCreator.getMainPackageName();
+        String newPackageName = classCreator.getPackageName();
+        String authorName = classCreator.getAuthorName();
+        String version = classCreator.getVersion();
+        String className = classCreator.getClassName();
+        HashMap<String, String> variables = classCreator.getVariables();
+        String directoryPath = classCreator.getDirectoryPath();
 
         //Useful Variables
         String restClassName = className + StringUtils.capitalize(PackageType.REST_CONTROLLER.getPackageName());
@@ -51,7 +52,7 @@ public class ClassCreatorService {
 
         //Entity
         if (classOptions.isCreateModel()) {
-            StringBuilderUtils.createPackage(mainPackageName, newPackageName);
+            StringBuilderUtils.createPackage(directoryPath, mainPackageName, newPackageName);
             StringBuilderUtils.importPackage(sourceCode, mainPackageName, newPackageName + "." + PackageType.MODEL.getPackageName());
             StringBuilderUtils.importRestPackage(sourceCode);
             StringBuilderUtils.createClassJavaDocs(sourceCode, authorName, version);
@@ -60,13 +61,13 @@ public class ClassCreatorService {
             StringBuilderUtils.createConstructor(sourceCode, className, variables);
             StringBuilderUtils.createMethods(sourceCode, variables);
             StringBuilderUtils.createClassEndSyntax(sourceCode);
-            StringBuilderUtils.generateClass(ClassUtils.getFullClassAbsolutePath(mainPackageName, newPackageName, PackageType.MODEL, className), sourceCode);
+            StringBuilderUtils.generateClass(ClassUtils.getFullClassAbsolutePath(directoryPath, mainPackageName, newPackageName, PackageType.MODEL, className), sourceCode);
         }
 
         if (classOptions.isCreateControllers()) {
             //Rest Controller
             sourceCode = new StringBuilder();
-            StringBuilderUtils.createPackage(mainPackageName, newPackageName);
+            StringBuilderUtils.createPackage(directoryPath, mainPackageName, newPackageName);
             StringBuilderUtils.importPackage(sourceCode, mainPackageName, newPackageName + "." + PackageType.CONTROLLER.getPackageName());
             RestControllerStringBuilderUtils.importClass(sourceCode, mainPackageName, newPackageName, PackageType.MODEL, className);
             //RestControllerStringBuilderUtils.importClass(sourceCode, mainPackageName, newPackageName, PackageType.CONTROLLER, controllerClassName);
@@ -76,12 +77,12 @@ public class ClassCreatorService {
             RestControllerStringBuilderUtils.createVariables(sourceCode, className, PackageType.CONTROLLER);
             RestControllerStringBuilderUtils.createMethods(sourceCode, className);
             RestControllerStringBuilderUtils.createClassEndSyntax(sourceCode);
-            StringBuilderUtils.generateClass(ClassUtils.getFullClassAbsolutePathForOtherClasses(mainPackageName, newPackageName, PackageType.CONTROLLER, restClassName), sourceCode);
+            StringBuilderUtils.generateClass(ClassUtils.getFullClassAbsolutePathForOtherClasses(directoryPath, mainPackageName, newPackageName, PackageType.CONTROLLER, restClassName), sourceCode);
 
 
             //Controller
             sourceCode = new StringBuilder();
-            StringBuilderUtils.createPackage(mainPackageName, newPackageName);
+            StringBuilderUtils.createPackage(directoryPath, mainPackageName, newPackageName);
             StringBuilderUtils.importPackage(sourceCode, mainPackageName, newPackageName + "." + PackageType.CONTROLLER.getPackageName());
             ControllerStringBuilderUtils.importClass(sourceCode, mainPackageName, newPackageName, PackageType.MODEL, className);
             ControllerStringBuilderUtils.importClass(sourceCode, mainPackageName, newPackageName, PackageType.DAO, repoClassName);
@@ -91,13 +92,13 @@ public class ClassCreatorService {
             ControllerStringBuilderUtils.createVariables(sourceCode, className, PackageType.REPO);
             ControllerStringBuilderUtils.createMethods(sourceCode, className);
             ControllerStringBuilderUtils.createClassEndSyntax(sourceCode);
-            StringBuilderUtils.generateClass(ClassUtils.getFullClassAbsolutePathForOtherClasses(mainPackageName, newPackageName, PackageType.CONTROLLER, controllerClassName), sourceCode);
+            StringBuilderUtils.generateClass(ClassUtils.getFullClassAbsolutePathForOtherClasses(directoryPath, mainPackageName, newPackageName, PackageType.CONTROLLER, controllerClassName), sourceCode);
         }
 
         //REPO
         if (classOptions.isCreateRepository()) {
             sourceCode = new StringBuilder();
-            StringBuilderUtils.createPackage(mainPackageName, newPackageName);
+            StringBuilderUtils.createPackage(directoryPath, mainPackageName, newPackageName);
             StringBuilderUtils.importPackage(sourceCode, mainPackageName, newPackageName + "." + PackageType.DAO.getPackageName());
             RepositoryStringBuilderUtils.importRestPackage(sourceCode);
             RepositoryStringBuilderUtils.importClass(sourceCode, mainPackageName, newPackageName, PackageType.MODEL, className);
@@ -107,18 +108,18 @@ public class ClassCreatorService {
             //RepositoryStringBuilderUtils.createVariables(sourceCode, className, PackageType.REPO);
             RepositoryStringBuilderUtils.createMethods(sourceCode, className);
             RepositoryStringBuilderUtils.createClassEndSyntax(sourceCode);
-            StringBuilderUtils.generateClass(ClassUtils.getFullClassAbsolutePathForOtherClasses(mainPackageName, newPackageName, PackageType.DAO, repoClassName), sourceCode);
+            StringBuilderUtils.generateClass(ClassUtils.getFullClassAbsolutePathForOtherClasses(directoryPath, mainPackageName, newPackageName, PackageType.DAO, repoClassName), sourceCode);
         }
 
         if (classOptions.isCreateView()) {
             //View
             sourceCode = new StringBuilder();
-            StringBuilderUtils.createPackage(mainPackageName, newPackageName);
+            StringBuilderUtils.createPackage(directoryPath, mainPackageName, newPackageName);
             StringBuilderUtils.importPackage(sourceCode, mainPackageName, newPackageName + "." + PackageType.VIEW.getPackageName());
             StringBuilderUtils.createClassJavaDocs(sourceCode, authorName, version);
             StringBuilderUtils.createClassStartSyntax(sourceCode, viewClassName, false);
             StringBuilderUtils.createClassEndSyntax(sourceCode);
-            StringBuilderUtils.generateClass(ClassUtils.getFullClassAbsolutePath(mainPackageName, newPackageName, PackageType.VIEW, viewClassName), sourceCode);
+            StringBuilderUtils.generateClass(ClassUtils.getFullClassAbsolutePath(directoryPath, mainPackageName, newPackageName, PackageType.VIEW, viewClassName), sourceCode);
         }
 
         return sourceCode;

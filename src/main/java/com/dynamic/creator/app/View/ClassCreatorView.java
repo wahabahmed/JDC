@@ -14,8 +14,10 @@ public class ClassCreatorView {
     private JTextField classNameTextField, mainPackageNameTextField, newPackageNameTextField, versionTextField, authorTextField;
     private String[] inputTypes = {"byte", "short", "int", "long", "float", "double", "String", "boolean", "char", "Date"};
     private JCheckBox modelCheckbox, controllersCheckbox, repoCheckbox, viewCheckbox;
-    private JButton createButton;
+    private JButton createButton, pathButton;
     private JTable table;
+    private JFileChooser chooser;
+    private JLabel directoryPathLabel;
 
     public ClassCreatorView() {
         init();
@@ -38,8 +40,6 @@ public class ClassCreatorView {
         inputFieldsPanel.setPreferredSize(gridPanelSize);
         inputFieldsPanel.setBackground(Color.yellow);
 
-        JButton jButton = new JButton("Test");
-        jButton.setPreferredSize(new Dimension(200, 100));
         mainPackageNameTextField = new JTextField();
         newPackageNameTextField = new JTextField();
         classNameTextField = new JTextField();
@@ -75,12 +75,21 @@ public class ClassCreatorView {
         sportColumn.setCellEditor(new DefaultCellEditor(comboBox));
         inputFieldsTypesPanel.add(new JScrollPane(table));
 
-        JPanel pathFieldsPanel = new JPanel(new RelativeLayout(RelativeLayout.Y_AXIS, 5));
-        pathFieldsPanel.setPreferredSize(gridPanelSize);
-        pathFieldsPanel.setBackground(Color.green);
-        pathFieldsPanel.add(Box.createGlue(), new Float(1));
-        pathFieldsPanel.add(jButton, new Float(3));
-        pathFieldsPanel.add(Box.createGlue(), new Float(1));
+        /***
+         * File Chooser Panel
+         */
+        JPanel fileChooserPanel = new JPanel(new RelativeLayout(RelativeLayout.Y_AXIS, 5));
+        fileChooserPanel.setPreferredSize(gridPanelSize);
+
+        pathButton = new JButton("Select Project Main Directory");
+        pathButton.setPreferredSize(new Dimension(200, 100));
+        directoryPathLabel = new JLabel("Select Directory where you would like to create package/code/classes");
+
+        fileChooserPanel.setBackground(Color.green);
+        fileChooserPanel.add(Box.createGlue(), new Float(1));
+        fileChooserPanel.add(pathButton, new Float(3));
+        fileChooserPanel.add(pathButton, new Float(3));
+        fileChooserPanel.add(directoryPathLabel, new Float(1));
 
         /***
          * Final Actions and Check Fox Panel
@@ -109,7 +118,7 @@ public class ClassCreatorView {
 
         mainPanel.add(inputFieldsPanel);
         mainPanel.add(inputFieldsTypesPanel);
-        mainPanel.add(pathFieldsPanel);
+        mainPanel.add(fileChooserPanel);
         mainPanel.add(actionButtonsPanel);
 
         mainFrame.add(mainPanel);
@@ -172,5 +181,34 @@ public class ClassCreatorView {
 
     public JTable getTable() {
         return table;
+    }
+
+    public JButton getPathButton() {
+        return pathButton;
+    }
+
+    public void showJDialog() {
+        chooser = new JFileChooser();
+        chooser.setCurrentDirectory(new java.io.File("."));
+        chooser.setDialogTitle("Select Project Directory");
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        //
+        // disable the "All files" option.
+        //
+        chooser.setAcceptAllFileFilterUsed(false);
+        //
+        if (chooser.showOpenDialog(new JPanel()) == JFileChooser.APPROVE_OPTION) {
+            setFileChooserLabel(chooser.getSelectedFile().getPath());
+        } else {
+            System.out.println("No Selection ");
+        }
+    }
+
+    public JFileChooser getChooser() {
+        return chooser;
+    }
+
+    public void setFileChooserLabel(String path) {
+        directoryPathLabel.setText(path);
     }
 }

@@ -12,8 +12,8 @@ import java.util.List;
 
 public class StringBuilderUtils {
 
-    public static void createPackage(String mainPackageName, String packageName) {
-        Boolean result = ClassUtils.checkPackageExistsOtherwiseCreateIt(mainPackageName, packageName);
+    public static void createPackage(String directoryPath, String mainPackageName, String packageName) {
+        Boolean result = ClassUtils.checkPackageExistsOtherwiseCreateIt(directoryPath, mainPackageName, packageName);
         System.out.println("PackageExistsOrCreated? " + result);
     }
 

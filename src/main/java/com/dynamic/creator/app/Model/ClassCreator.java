@@ -9,14 +9,16 @@ public class ClassCreator {
     private String version;
     private String className;
     private HashMap<String, String> variables;
+    private String directoryPath;
 
-    public ClassCreator(String mainPackageName, String packageName, String authorName, String version, String className, HashMap<String, String> variables) {
+    public ClassCreator(String mainPackageName, String packageName, String authorName, String version, String className, HashMap<String, String> variables, String directoryPath) {
         this.mainPackageName = mainPackageName;
         this.packageName = packageName;
         this.authorName = authorName;
         this.version = version;
         this.className = className;
         this.variables = variables;
+        this.directoryPath = directoryPath;
     }
 
     public String getMainPackageName() {
@@ -65,6 +67,14 @@ public class ClassCreator {
 
     public void setVariables(HashMap<String, String> variables) {
         this.variables = variables;
+    }
+
+    public String getDirectoryPath() {
+        return directoryPath;
+    }
+
+    public void setDirectoryPath(String directoryPath) {
+        this.directoryPath = directoryPath;
     }
 }
 

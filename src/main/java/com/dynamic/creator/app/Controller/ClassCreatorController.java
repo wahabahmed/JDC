@@ -29,6 +29,7 @@ public class ClassCreatorController implements MouseListener {
     private void generateClass() {
         view = new ClassCreatorView();
         view.getCreateButton().addMouseListener(this);
+        view.getPathButton().addMouseListener(this);
     }
 
     private void prepareObjectsAndPassToService() {
@@ -44,24 +45,23 @@ public class ClassCreatorController implements MouseListener {
                 variableName = table.getValueAt(i, 0).toString();
                 variableType = table.getValueAt(i, 1).toString();
 
-
                 if (!variableName.isEmpty() || !variableType.isEmpty()) {
                     variablesToPass.put(variableName, variableType);
-                    finalNamesForOutput += variableName + " : " + variableType;
+                    finalNamesForOutput += variableName + " : " + variableType + "\n";
                 }
             }
         }
 
         JOptionPane.showMessageDialog(null, finalNamesForOutput);
 
-        System.out.println(view.getMainPackageNameTextField().getText());
         ClassCreator classCreator = new ClassCreator(
                 view.getMainPackageNameTextField().getText(),
                 view.getNewPackageNameTextField().getText(),
                 view.getAuthorTextField().getText(),
                 view.getVersionTextField().getText(),
                 view.getClassNameTextField().getText(),
-                variablesToPass
+                variablesToPass,
+                view.getChooser().getSelectedFile().getPath()
         );
 
         ClassOptions classOptions = new ClassOptions(
@@ -72,6 +72,7 @@ public class ClassCreatorController implements MouseListener {
         );
 
         System.out.println("selected " + view.getModelCheckbox().isSelected());
+        //System.exit(0);
         ClassCreatorService.createClass(classCreator, classOptions);
     }
 
@@ -89,6 +90,8 @@ public class ClassCreatorController implements MouseListener {
     public void mouseReleased(MouseEvent e) {
         if (e.getSource().equals(view.getCreateButton())) {
             prepareObjectsAndPassToService();
+        } else if (e.getSource().equals(view.getPathButton())) {
+            view.showJDialog();
         }
     }
 
