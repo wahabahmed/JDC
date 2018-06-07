@@ -71,8 +71,6 @@ public class ClassCreatorController implements MouseListener {
                 view.getViewCheckbox().isSelected()
         );
 
-        System.out.println("selected " + view.getModelCheckbox().isSelected());
-        //System.exit(0);
         ClassCreatorService.createClass(classCreator, classOptions);
     }
 

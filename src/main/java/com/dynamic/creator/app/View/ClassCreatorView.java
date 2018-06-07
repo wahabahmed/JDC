@@ -1,9 +1,14 @@
 package com.dynamic.creator.app.View;
 
 
+import com.dynamic.creator.app.Utils.ImagePanel;
+import com.dynamic.creator.app.Utils.MatchableComboBoxDocument;
+
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import javax.swing.text.JTextComponent;
 import java.awt.*;
 
 /**
@@ -12,7 +17,20 @@ import java.awt.*;
 public class ClassCreatorView {
     private JFrame mainFrame;
     private JTextField classNameTextField, mainPackageNameTextField, newPackageNameTextField, versionTextField, authorTextField;
-    private String[] inputTypes = {"byte", "short", "int", "long", "float", "double", "String", "boolean", "char", "Date"};
+    private String[] inputTypes = {
+            "byte",
+            "short",
+            "int",
+            "long",
+            "float",
+            "double",
+            "String",
+            "boolean",
+            "char",
+            "Date",
+            "List<String>",
+            "List<Integer>",
+            "List<Date>"};
     private JCheckBox modelCheckbox, controllersCheckbox, repoCheckbox, viewCheckbox;
     private JButton createButton, pathButton;
     private JTable table;
@@ -28,17 +46,21 @@ public class ClassCreatorView {
         Dimension mainFrameSize = dim;//new Dimension(800, 600);
         Dimension gridPanelSize = new Dimension((int) mainFrameSize.getWidth() / 2, (int) mainFrameSize.getHeight() / 2);
 
+
         mainFrame = new JFrame();
         mainFrame.setSize(mainFrameSize);
+        mainFrame.setExtendedState(mainFrame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
         mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         mainFrame.setLocationRelativeTo(null);
-
-        JPanel mainPanel = new JPanel(new GridLayout(2, 2));
+        ImageIcon imageIcon = new ImageIcon(getClass().getClassLoader().getResource("bg1.jpg"));
+        JPanel mainPanel = new ImagePanel(imageIcon.getImage());//new JPanel(new GridLayout(2, 2));
+        mainPanel.setLayout(new GridLayout(2, 2));
         mainPanel.setPreferredSize(mainFrameSize);
 
         JPanel inputFieldsPanel = new JPanel(new GridLayout(5, 2));
         inputFieldsPanel.setPreferredSize(gridPanelSize);
         inputFieldsPanel.setBackground(Color.yellow);
+        inputFieldsPanel.setOpaque(false);
 
         mainPackageNameTextField = new JTextField();
         newPackageNameTextField = new JTextField();
@@ -56,21 +78,37 @@ public class ClassCreatorView {
          */
         JPanel inputFieldsTypesPanel = new JPanel(new GridLayout(0, 1));
         inputFieldsTypesPanel.setPreferredSize(gridPanelSize);
-        inputFieldsTypesPanel.setBackground(Color.red);
+        //inputFieldsTypesPanel.setBackground(Color.red);
+        inputFieldsTypesPanel.setOpaque(false);
         JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setOpaque(false);
+        scrollPane.getViewport().setOpaque(false);
         table = new JTable();
+        table.setOpaque(false);
+        //table.setShowGrid(false);
         table.setRowHeight(30);
+        table.setGridColor(Color.LIGHT_GRAY);//setBorder(BorderFactory.createLineBorder(, 2));
         DefaultTableModel model = new DefaultTableModel(100, 2);
         model.setColumnIdentifiers(new Object[]{
                 "Variable Name", "Type"});
         table.setModel(model);
 
+        TableColumn col = table.getColumnModel().getColumn(0);
+        DefaultCellEditor singleclick = new DefaultCellEditor(new JTextField());
+        singleclick.setClickCountToStart(1);
+        col.setCellEditor(singleclick);
+
         //Add Combo Box to the Table Type Column
         TableColumn sportColumn = table.getColumnModel().getColumn(1);
         JComboBox comboBox = new JComboBox();
+        comboBox.setOpaque(false);
         for (String inputType : inputTypes) {
             comboBox.addItem(inputType);
         }
+
+        comboBox.setEditable(true);
+        JTextComponent editor = (JTextComponent) comboBox.getEditor().getEditorComponent();
+        editor.setDocument(new MatchableComboBoxDocument(comboBox));
 
         sportColumn.setCellEditor(new DefaultCellEditor(comboBox));
         inputFieldsTypesPanel.add(new JScrollPane(table));
@@ -80,6 +118,7 @@ public class ClassCreatorView {
          */
         JPanel fileChooserPanel = new JPanel(new RelativeLayout(RelativeLayout.Y_AXIS, 5));
         fileChooserPanel.setPreferredSize(gridPanelSize);
+        fileChooserPanel.setOpaque(false);
 
         pathButton = new JButton("Select Project Main Directory");
         pathButton.setPreferredSize(new Dimension(200, 100));
@@ -97,12 +136,22 @@ public class ClassCreatorView {
         JPanel actionButtonsPanel = new JPanel(new GridLayout(2, 0));
         actionButtonsPanel.setPreferredSize(gridPanelSize);
         actionButtonsPanel.setBackground(Color.blue);
+        actionButtonsPanel.setOpaque(false);
 
         JPanel checkBoxesPanel = new JPanel();
+        checkBoxesPanel.setOpaque(false);
         modelCheckbox = new JCheckBox("Model");
+        modelCheckbox.setFont(new Font(modelCheckbox.getFont().getName(),modelCheckbox.getFont().getStyle(),22));
+        modelCheckbox.setOpaque(false);
         controllersCheckbox = new JCheckBox("Controllers");
+        controllersCheckbox.setFont(new Font(modelCheckbox.getFont().getName(),modelCheckbox.getFont().getStyle(),22));
+        controllersCheckbox.setOpaque(false);
         repoCheckbox = new JCheckBox("Repo");
+        repoCheckbox.setFont(new Font(modelCheckbox.getFont().getName(),modelCheckbox.getFont().getStyle(),22));
+        repoCheckbox.setOpaque(false);
         viewCheckbox = new JCheckBox("View");
+        viewCheckbox.setFont(new Font(modelCheckbox.getFont().getName(),modelCheckbox.getFont().getStyle(),22));
+        viewCheckbox.setOpaque(false);
         checkBoxesPanel.add(modelCheckbox);
         checkBoxesPanel.add(controllersCheckbox);
         checkBoxesPanel.add(repoCheckbox);
@@ -111,6 +160,7 @@ public class ClassCreatorView {
         JPanel createButtonPanel = new JPanel();
         createButton = new JButton("Create All ...!");
         createButtonPanel.add(createButton);
+        createButtonPanel.setOpaque(false);
 
         actionButtonsPanel.add(checkBoxesPanel);
         actionButtonsPanel.add(createButtonPanel);
@@ -120,7 +170,6 @@ public class ClassCreatorView {
         mainPanel.add(inputFieldsTypesPanel);
         mainPanel.add(fileChooserPanel);
         mainPanel.add(actionButtonsPanel);
-
         mainFrame.add(mainPanel);
         mainFrame.setVisible(true);
     }
@@ -129,6 +178,10 @@ public class ClassCreatorView {
         JLabel label = new JLabel(fieldName);
         label.setPreferredSize(new Dimension(80, 50));
         label.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0));
+        label.setFont(new Font(label.getFont().getName(), Font.BOLD, 20));
+        Border line = BorderFactory.createLineBorder(Color.DARK_GRAY);
+        textFieldToAdd.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(20, 0, 20, 20), textFieldToAdd.getBorder()));
+        textFieldToAdd.setOpaque(false);
         panel.add(label);
         panel.add(textFieldToAdd);
     }
