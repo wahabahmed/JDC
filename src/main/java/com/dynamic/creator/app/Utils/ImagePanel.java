@@ -12,11 +12,12 @@ public class ImagePanel extends JPanel {
     }
 
     public ImagePanel(Image img) {
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.img = img;
         Dimension size = new Dimension(img.getWidth(null), img.getHeight(null));
         setPreferredSize(size);
-        setMinimumSize(size);
-        setMaximumSize(size);
+        setMinimumSize(dim);
+        setMaximumSize(dim);
         setSize(size);
         setLayout(null);
     }
