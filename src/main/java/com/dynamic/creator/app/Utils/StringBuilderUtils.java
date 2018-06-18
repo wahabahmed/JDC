@@ -39,12 +39,33 @@ public class StringBuilderUtils {
      *
      * @param sourceCode StringBuilder in which we need to append the code
      */
-    public static void importRestPackage(StringBuilder sourceCode) {
+    public static void importRestClasses(StringBuilder sourceCode, HashMap<String, String> variables) {
+        importDataClasses(sourceCode, variables);
+
         sourceCode.append("import javax.persistence.Column;\n" +
                 "import javax.persistence.Entity;\n" +
                 "import javax.persistence.Id;\n" +
                 "import javax.persistence.Table;\n");
         sourceCode.append("import javax.validation.constraints.NotNull;\n\n");
+    }
+
+    public static void importDataClasses(StringBuilder sourceCode, HashMap<String, String> variables) {
+        boolean dateClassAdded = false;
+        boolean listClassAdded = false;
+
+        for (String key : variables.keySet()) {
+            String value = variables.get(key);
+
+            if ((value.contains("Date")) && !dateClassAdded) {
+                sourceCode.append("import java.util.Date;\n");
+                dateClassAdded = true;
+            }
+
+            if ((value.contains("List")) && !listClassAdded) {
+                sourceCode.append("import java.util.List;\n\n");
+                listClassAdded = true;
+            }
+        }
     }
 
     /***
@@ -68,7 +89,7 @@ public class StringBuilderUtils {
 
         if (isEntity) {
             stringToAdd = "@Entity\n" +
-                    "@Table(name = \"JB_ARTIST\")\n";
+                    "@Table(name = \"db_" + className.toLowerCase() + "\")\n";
         }
 
         sourceCode.append(stringToAdd + "public class " + StringUtils.capitalize(className) + " {\n\n");
@@ -83,20 +104,23 @@ public class StringBuilderUtils {
         Boolean idAlreadySet = false;
         String stringToAdd = "";
         Boolean unique = false;
+        String length = "";
+
 
         for (String variableName : listOfVariables) {
             String variableType = variables.get(variableName);
-            if (variableName.contains("id")) {
+            if (variableName.contains("id") || variables.get(variableName).contains("Date")) {
                 stringToAdd = "\t@Id\n";
                 unique = true;
             } else {
                 stringToAdd = "";
                 unique = false;
+                length = "length = 255, ";
             }
 
 
             sourceCode.append(stringToAdd +
-                    "\t@Column(length = 255, unique = " + unique + ", nullable = false)\n" +
+                    "\t@Column(" + length + "unique = " + unique + ", nullable = false)\n" +
                     "\t@NotNull\n" +
                     "\tprivate " + variableType + " " + variableName + ";\n");
         }

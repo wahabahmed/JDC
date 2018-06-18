@@ -7,6 +7,7 @@ import com.dynamic.creator.app.Utils.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.swing.*;
 import java.util.HashMap;
 
 @Service
@@ -54,7 +55,7 @@ public class ClassCreatorService {
         if (classOptions.isCreateModel()) {
             StringBuilderUtils.createPackage(directoryPath, mainPackageName, newPackageName);
             StringBuilderUtils.importPackage(sourceCode, mainPackageName, newPackageName + "." + PackageType.MODEL.getPackageName());
-            StringBuilderUtils.importRestPackage(sourceCode);
+            StringBuilderUtils.importRestClasses(sourceCode, variables);
             StringBuilderUtils.createClassJavaDocs(sourceCode, authorName, version);
             StringBuilderUtils.createClassStartSyntax(sourceCode, className, true);
             StringBuilderUtils.createVariables(sourceCode, variables);
@@ -70,7 +71,7 @@ public class ClassCreatorService {
             StringBuilderUtils.createPackage(directoryPath, mainPackageName, newPackageName);
             StringBuilderUtils.importPackage(sourceCode, mainPackageName, newPackageName + "." + PackageType.CONTROLLER.getPackageName());
             RestControllerStringBuilderUtils.importClass(sourceCode, mainPackageName, newPackageName, PackageType.MODEL, className);
-            //RestControllerStringBuilderUtils.importClass(sourceCode, mainPackageName, newPackageName, PackageType.CONTROLLER, controllerClassName);
+            StringBuilderUtils.importDataClasses(sourceCode, variables);
             RestControllerStringBuilderUtils.importRestPackage(sourceCode);
             RestControllerStringBuilderUtils.createClassJavaDocs(sourceCode, authorName, version);
             RestControllerStringBuilderUtils.createClassStartSyntax(sourceCode, StringUtils.capitalize(restClassName));
@@ -79,11 +80,11 @@ public class ClassCreatorService {
             RestControllerStringBuilderUtils.createClassEndSyntax(sourceCode);
             StringBuilderUtils.generateClass(ClassUtils.getFullClassAbsolutePathForOtherClasses(directoryPath, mainPackageName, newPackageName, PackageType.CONTROLLER, restClassName), sourceCode);
 
-
             //Controller
             sourceCode = new StringBuilder();
             StringBuilderUtils.createPackage(directoryPath, mainPackageName, newPackageName);
             StringBuilderUtils.importPackage(sourceCode, mainPackageName, newPackageName + "." + PackageType.CONTROLLER.getPackageName());
+            StringBuilderUtils.importDataClasses(sourceCode, variables);
             ControllerStringBuilderUtils.importClass(sourceCode, mainPackageName, newPackageName, PackageType.MODEL, className);
             ControllerStringBuilderUtils.importClass(sourceCode, mainPackageName, newPackageName, PackageType.DAO, repoClassName);
             ControllerStringBuilderUtils.importRestPackage(sourceCode);
@@ -102,25 +103,27 @@ public class ClassCreatorService {
             StringBuilderUtils.importPackage(sourceCode, mainPackageName, newPackageName + "." + PackageType.DAO.getPackageName());
             RepositoryStringBuilderUtils.importRestPackage(sourceCode);
             RepositoryStringBuilderUtils.importClass(sourceCode, mainPackageName, newPackageName, PackageType.MODEL, className);
-            //RepositoryStringBuilderUtils.importClass(sourceCode, mainPackageName, newPackageName, PackageType.DAO, className + "Repo");
             RepositoryStringBuilderUtils.createClassJavaDocs(sourceCode, authorName, version);
             RepositoryStringBuilderUtils.createClassStartSyntax(sourceCode, StringUtils.capitalize(className));
-            //RepositoryStringBuilderUtils.createVariables(sourceCode, className, PackageType.REPO);
             RepositoryStringBuilderUtils.createMethods(sourceCode, className);
             RepositoryStringBuilderUtils.createClassEndSyntax(sourceCode);
             StringBuilderUtils.generateClass(ClassUtils.getFullClassAbsolutePathForOtherClasses(directoryPath, mainPackageName, newPackageName, PackageType.DAO, repoClassName), sourceCode);
         }
 
+        //View
         if (classOptions.isCreateView()) {
-            //View
             sourceCode = new StringBuilder();
             StringBuilderUtils.createPackage(directoryPath, mainPackageName, newPackageName);
+            StringBuilderUtils.importDataClasses(sourceCode, variables);
             StringBuilderUtils.importPackage(sourceCode, mainPackageName, newPackageName + "." + PackageType.VIEW.getPackageName());
             StringBuilderUtils.createClassJavaDocs(sourceCode, authorName, version);
             StringBuilderUtils.createClassStartSyntax(sourceCode, viewClassName, false);
             StringBuilderUtils.createClassEndSyntax(sourceCode);
             StringBuilderUtils.generateClass(ClassUtils.getFullClassAbsolutePath(directoryPath, mainPackageName, newPackageName, PackageType.VIEW, viewClassName), sourceCode);
         }
+
+
+        JOptionPane.showMessageDialog(null, "Code Has Been Generated!");
 
         return sourceCode;
     }
