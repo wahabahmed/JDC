@@ -30,6 +30,7 @@ public class ClassCreatorController implements MouseListener {
         view = new ClassCreatorView();
         view.getCreateButton().addMouseListener(this);
         view.getPathButton().addMouseListener(this);
+        view.getExitButton().addMouseListener(this);
     }
 
     private void prepareObjectsAndPassToService() {
@@ -90,6 +91,8 @@ public class ClassCreatorController implements MouseListener {
             prepareObjectsAndPassToService();
         } else if (e.getSource().equals(view.getPathButton())) {
             view.showJDialog();
+        }else if (e.getSource().equals(view.getExitButton())) {
+            System.exit(1);
         }
     }
 

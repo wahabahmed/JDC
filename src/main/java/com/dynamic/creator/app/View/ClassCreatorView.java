@@ -6,6 +6,8 @@ import com.dynamic.creator.app.Utils.JGradientButton;
 import com.dynamic.creator.app.Utils.MatchableComboBoxDocument;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.text.JTextComponent;
@@ -32,7 +34,7 @@ public class ClassCreatorView {
             "List<Integer>",
             "List<Date>"};
     private JCheckBox modelCheckbox, controllersCheckbox, repoCheckbox, viewCheckbox;
-    private JButton createButton, pathButton;
+    private JButton createButton, pathButton, exitButton;
     private JTable table;
     private JFileChooser chooser;
     private JLabel directoryPathLabel;
@@ -53,6 +55,7 @@ public class ClassCreatorView {
         mainFrame.setExtendedState(mainFrame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
         mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         mainFrame.setLocationRelativeTo(null);
+        mainFrame.setUndecorated(true);
         ImageIcon imageIcon = new ImageIcon(getClass().getClassLoader().getResource("bg3.jpg"));
         JPanel mainPanel = new ImagePanel(imageIcon.getImage());
         mainPanel.setLayout(new GridLayout(2, 2));
@@ -61,10 +64,11 @@ public class ClassCreatorView {
         JPanel inputFieldsPanel = new JPanel();
         inputFieldsPanel.setPreferredSize(gridPanelSize);
         inputFieldsPanel.setOpaque(false);
-        createHeading("Step1. Fill Out the Project and Class Details", inputFieldsPanel);
+        //createHeading("Step1. Fill Out the Project and Class Details", inputFieldsPanel);
         JPanel fieldSubPanel = new JPanel(new GridLayout(5, 3));
         fieldSubPanel.setPreferredSize(new Dimension((int) mainFrameSize.getWidth() / 2 - 50, (int) inputFieldsPanel.getPreferredSize().getHeight() - 100));
         fieldSubPanel.setOpaque(false);
+        createTitelBorder("Step1. Fill Out the Project and Class Details", inputFieldsPanel);
 
         mainPackageNameTextField = new JTextField();
         newPackageNameTextField = new JTextField();
@@ -111,17 +115,17 @@ public class ClassCreatorView {
         editor.setDocument(new MatchableComboBoxDocument(comboBox));
 
         sportColumn.setCellEditor(new DefaultCellEditor(comboBox));
-        createHeading("Step2. Select Class Variables and Their types", inputFieldsTypesPanel);
         JScrollPane scrollPane = new JScrollPane(table);
         inputFieldsTypesPanel.add(scrollPane);
-
+        createTitelBorder("Step2. Select Class Variables and Their types", inputFieldsTypesPanel);
         /***
          * File Chooser Panel
          */
         JPanel fileChooserPanel = new JPanel(new RelativeLayout(RelativeLayout.Y_AXIS, 5));
-        createHeading("Step3. Select Project Directory", fileChooserPanel);
+        //createHeading("Step3. Select Project Directory", fileChooserPanel);
         fileChooserPanel.setPreferredSize(gridPanelSize);
         fileChooserPanel.setOpaque(false);
+        createTitelBorder("Step3. Select Project Directory", fileChooserPanel);
 
         pathButton = new JGradientButton("Select Project Main Directory");
         pathButton.setPreferredSize(new Dimension(200, 100));
@@ -135,10 +139,11 @@ public class ClassCreatorView {
         JPanel actionButtonsPanel = new JPanel(new GridLayout(2, 0));
         actionButtonsPanel.setPreferredSize(gridPanelSize);
         actionButtonsPanel.setOpaque(false);
+        createTitelBorder("Step4. Select what would you like to create", actionButtonsPanel);
 
         JPanel checkBoxesPanel = new JPanel();
         checkBoxesPanel.setOpaque(false);
-        createHeading("Step4. Select what would you like to create", checkBoxesPanel);
+        //createHeading("Step4. Select what would you like to create", checkBoxesPanel);
         modelCheckbox = new JCheckBox("Model");
         setupCheckBox(modelCheckbox, checkBoxesPanel);
         controllersCheckbox = new JCheckBox("Controllers");
@@ -150,9 +155,14 @@ public class ClassCreatorView {
 
         JPanel createButtonPanel = new JPanel();
         createButton = new JGradientButton("Create All ...!");
+        exitButton = new JGradientButton("Exit");
+
         createButton.setPreferredSize(new Dimension(200, 200));
+        exitButton.setPreferredSize(new Dimension(200, 200));
         createButton.setBackground(new Color(146, 221, 253));
+        exitButton.setBackground(new Color(146, 221, 253));
         createButtonPanel.add(createButton);
+        createButtonPanel.add(exitButton);
         createButtonPanel.setOpaque(false);
 
         actionButtonsPanel.add(checkBoxesPanel);
@@ -194,6 +204,11 @@ public class ClassCreatorView {
         heading.setForeground(new Color(4, 213, 249));
         heading.setPreferredSize(new Dimension((int) mainFrame.getSize().getWidth() / 2, 70));
         panel.add(heading);
+    }
+
+    private void createTitelBorder(String heading, JPanel panel) {
+        panel.setBorder(BorderFactory.createTitledBorder(new LineBorder(new Color(0, 0, 153)), heading, TitledBorder.CENTER,
+                TitledBorder.TOP, new Font(Font.SANS_SERIF, Font.BOLD, 15), new Color(153, 0, 0)));
     }
 
     public static void main(String[] args) {
@@ -273,5 +288,9 @@ public class ClassCreatorView {
 
     public void setFileChooserLabel(String path) {
         directoryPathLabel.setText(path);
+    }
+
+    public JButton getExitButton() {
+        return exitButton;
     }
 }

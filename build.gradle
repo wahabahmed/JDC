@@ -1,5 +1,5 @@
 group 'com.dynamic.creator.app'
-version '1.0-SNAPSHOT'
+version '2.0'
 
 buildscript {
 
@@ -17,6 +17,7 @@ buildscript {
 
 
 apply plugin: 'java'
+apply plugin: 'signing'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
@@ -25,12 +26,16 @@ apply plugin: 'io.spring.dependency-management'
 //create a single Jar with all dependencies
 task createJar(type: Jar) {
     manifest {
-        attributes 'Implementation-Title': 'Gradle Jar File Example',
+        attributes 'Implementation-Title': 'Create Jar File',
                 'Implementation-Version': version,
                 'Main-Class': 'com.dynamic.creator.app.Application'
     }
-    baseName = project.name + '-all'
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    baseName = rootProject.name
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } } {
+      exclude 'META-INF/*.DSA',
+              'META-INF/*.SF'
+    }
+
     with jar
 }
 
@@ -44,8 +49,9 @@ repositories {
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
     compile("org.springframework.boot:spring-boot-starter-web")
-    compile("org.springframework.data:spring-data-commons-core:1.1.0.RELEASE")
+    /*compile("org.springframework.data:spring-data-commons-core:1.1.0.RELEASE")
     compile group: 'com.google.guava', name: 'guava', version: '11.0.2'
+    compile group: 'javax.persistence', name: 'persistence-api', version: '1.0'*/
     compile group: 'org.bouncycastle', name: 'bcprov-jdk16', version: '1.45'
     compile group: 'commons-codec', name: 'commons-codec', version: '1.11'
     // https://mvnrepository.com/artifact/com.google.code.gson/gson
